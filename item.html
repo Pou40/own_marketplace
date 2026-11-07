@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Item</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛍️</text></svg>">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="./" data-shop-name>Shop</a>
+      <nav class="nav">
+        <a href="./#shop">Shop</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" id="main">
+    <p class="empty">Loading…</p>
+  </main>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+    <button class="close" aria-label="Close">✕</button>
+    <button class="prev" aria-label="Previous photo">‹</button>
+    <img alt="">
+    <button class="next" aria-label="Next photo">›</button>
+  </div>
+
+  <footer class="site-footer" id="contact">
+    <div class="container">
+      <div>© <span data-year></span> <span data-shop-name></span> · <span data-location></span></div>
+      <div>Questions? <span data-contact-links></span></div>
+    </div>
+  </footer>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/item.js"></script>
+</body>
+</html>

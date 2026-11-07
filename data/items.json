@@ -1,0 +1,101 @@
+[
+  {
+    "id": "denim-jacket-blue",
+    "title": "Classic Blue Denim Jacket",
+    "category": "clothing",
+    "price": 35,
+    "originalPrice": 89,
+    "condition": "Like new",
+    "status": "available",
+    "brand": "Levi's",
+    "size": "M",
+    "color": "Mid blue",
+    "dateAdded": "2026-11-01",
+    "featured": true,
+    "description": "Timeless trucker-style denim jacket. Worn only a handful of times, no fading, no stains. All buttons intact.",
+    "details": {
+      "Material": "100% cotton denim",
+      "Fit": "Regular",
+      "Chest (pit to pit)": "54 cm",
+      "Length": "64 cm"
+    },
+    "images": ["images/items/sample-jacket-1.svg", "images/items/sample-jacket-2.svg"]
+  },
+  {
+    "id": "white-sneakers-42",
+    "title": "White Leather Sneakers",
+    "category": "shoes",
+    "price": 40,
+    "originalPrice": 120,
+    "condition": "Good",
+    "status": "available",
+    "brand": "Adidas",
+    "size": "EU 42",
+    "color": "White",
+    "dateAdded": "2026-10-28",
+    "featured": false,
+    "description": "Comfortable everyday sneakers. Light creasing on the toe box, soles in great shape. Cleaned before listing.",
+    "details": {
+      "Upper": "Leather",
+      "Sole wear": "Minimal",
+      "Box included": "No"
+    },
+    "images": ["images/items/sample-sneakers-1.svg"]
+  },
+  {
+    "id": "bluetooth-headphones",
+    "title": "Wireless Noise-Cancelling Headphones",
+    "category": "electronics",
+    "price": 95,
+    "originalPrice": 249,
+    "condition": "Like new",
+    "status": "available",
+    "brand": "Sony",
+    "color": "Black",
+    "dateAdded": "2026-11-04",
+    "featured": true,
+    "description": "Excellent noise cancelling and battery life. Comes with original case and charging cable. Fully reset and working perfectly.",
+    "details": {
+      "Battery life": "~28 hours",
+      "Connectivity": "Bluetooth 5.0, 3.5 mm",
+      "Included": "Case, USB-C cable, audio cable"
+    },
+    "images": ["images/items/sample-headphones-1.svg"]
+  },
+  {
+    "id": "ceramic-table-lamp",
+    "title": "Ceramic Table Lamp",
+    "category": "home",
+    "price": 25,
+    "condition": "Good",
+    "status": "reserved",
+    "color": "Sage green",
+    "dateAdded": "2026-10-20",
+    "featured": false,
+    "description": "Hand-glazed ceramic base with linen shade. Warm light, perfect for a bedside table. Bulb included.",
+    "details": {
+      "Height": "45 cm",
+      "Plug": "Standard",
+      "Bulb": "E27, included"
+    },
+    "images": ["images/items/sample-lamp-1.svg"]
+  },
+  {
+    "id": "leather-backpack",
+    "title": "Brown Leather Backpack",
+    "category": "accessories",
+    "price": 55,
+    "originalPrice": 140,
+    "condition": "Good",
+    "status": "sold",
+    "color": "Cognac brown",
+    "dateAdded": "2026-10-10",
+    "featured": false,
+    "description": "Roomy leather backpack with laptop sleeve (fits 15\"). Natural patina on the leather adds character.",
+    "details": {
+      "Dimensions": "42 x 30 x 14 cm",
+      "Laptop sleeve": "Up to 15 inch"
+    },
+    "images": ["images/items/sample-backpack-1.svg"]
+  }
+]

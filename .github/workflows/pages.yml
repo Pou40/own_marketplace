@@ -1,0 +1,48 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate items.json
+        run: |
+          node -e '
+            const items = require("./data/items.json");
+            const fs = require("fs");
+            const ids = new Set();
+            let bad = 0;
+            for (const it of items) {
+              for (const f of ["id","title","category","price"]) if (it[f] === undefined) { console.error(`Item ${it.id||"?"} missing "${f}"`); bad++; }
+              if (ids.has(it.id)) { console.error(`Duplicate id: ${it.id}`); bad++; }
+              ids.add(it.id);
+              for (const img of it.images || []) if (!fs.existsSync(img)) { console.error(`Item ${it.id}: image not found: ${img}`); bad++; }
+            }
+            if (bad) process.exit(1);
+            console.log(`OK: ${items.length} items`);
+          '
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4
