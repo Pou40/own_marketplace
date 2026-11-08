@@ -16,6 +16,9 @@ window.SITE_CONFIG = {
 
   location: "Pickup or shipping available",
 
+  // Your GitHub repo (used by the "Add item" helper page to link to the right file).
+  repo: "Pou40/own_marketplace",
+
   // Categories shown in the filter bar (order matters). Items can use any of these ids.
   categories: [
     { id: "clothing", label: "Clothing" },

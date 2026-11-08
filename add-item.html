@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Add Item</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    .form { display: grid; gap: 14px; max-width: 640px; margin: 24px 0 64px; }
+    .form label { display: grid; gap: 6px; font-size: .9rem; color: var(--muted); }
+    .form input, .form select, .form textarea {
+      padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font: inherit;
+    }
+    .form textarea { min-height: 90px; resize: vertical; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 520px) { .row { grid-template-columns: 1fr; } }
+    .help { font-size: .85rem; color: var(--muted); margin: 0; }
+    .out { width: 100%; min-height: 220px; font-family: ui-monospace, monospace; font-size: .8rem; }
+    .step { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+    .step h2 { margin: 0 0 8px; font-size: 1.05rem; }
+    .error { color: var(--sale); font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="./" data-shop-name>Shop</a>
+      <nav class="nav"><a href="./">View shop</a></nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero" style="padding-bottom:0">
+      <h1>Add an item</h1>
+      <p>Fill this in, press <strong>Generate</strong>, then paste the result into <code>data/items.json</code> on GitHub. It keeps all your existing items and adds this one on top.</p>
+    </section>
+
+    <form class="form" id="f">
+      <div class="step">
+        <h2>1 · Photos</h2>
+        <p class="help">First upload your photos to the <code>images/items</code> folder on GitHub. Then type their file names here, one per line, in the order you want them shown (the first one is the cover).</p>
+        <label>Photo file names
+          <textarea id="images" placeholder="red-sweater-front.jpg&#10;red-sweater-back.jpg" required></textarea>
+        </label>
+      </div>
+
+      <div class="step" style="display:grid;gap:14px">
+        <h2>2 · Details</h2>
+        <label>Title <input id="title" required placeholder="Red Wool Sweater"></label>
+        <div class="row">
+          <label>Category <select id="category"></select></label>
+          <label>Status
+            <select id="status"><option value="available">Available</option><option value="reserved">Reserved</option><option value="sold">Sold</option></select>
+          </label>
+        </div>
+        <div class="row">
+          <label>Price <input id="price" type="number" min="0" step="0.01" required></label>
+          <label>Original price (optional) <input id="originalPrice" type="number" min="0" step="0.01" placeholder="Shows a discount badge"></label>
+        </div>
+        <div class="row">
+          <label>Condition
+            <select id="condition"><option>New with tags</option><option>Like new</option><option selected>Good</option><option>Fair</option></select>
+          </label>
+          <label>Brand (optional) <input id="brand"></label>
+        </div>
+        <div class="row">
+          <label>Size (optional) <input id="size" placeholder="M, EU 42, 32x30…"></label>
+          <label>Color (optional) <input id="color"></label>
+        </div>
+        <label>Description <textarea id="description" required placeholder="What it is, how it's been used, any flaws…"></textarea></label>
+        <label>Extra details (optional, one per line as <em>Label: value</em>)
+          <textarea id="details" placeholder="Material: 100% wool&#10;Length: 68 cm"></textarea>
+        </label>
+        <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="featured"> Featured item</label>
+      </div>
+
+      <button class="btn primary" type="submit">Generate</button>
+      <p class="error" id="err" hidden></p>
+
+      <div class="step" id="result" hidden>
+        <h2>3 · Paste into GitHub</h2>
+        <p class="help">Press <strong>Copy</strong>. Then on GitHub open <code>data/items.json</code>, tap the ✏️ pencil, select everything, paste, and press <strong>Commit changes</strong>. The site updates in about a minute.</p>
+        <textarea class="out" id="out" readonly></textarea>
+        <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn primary" type="button" id="copy">Copy</button>
+          <a class="btn" id="ghEdit" target="_blank" rel="noopener">Open items.json on GitHub</a>
+        </div>
+      </div>
+    </form>
+  </main>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/common.js"></script>
+  <script>
+  (function () {
+    const { cfg, loadItems } = window.Shop;
+    const $ = (id) => document.getElementById(id);
+    $("category").innerHTML = cfg.categories.map((c) => `<option value="${c.id}">${c.label}</option>`).join("");
+    if (cfg.repo) $("ghEdit").href = `https://github.com/${cfg.repo}/edit/main/data/items.json`;
+    else $("ghEdit").hidden = true;
+
+    const slug = (s) => s.toLowerCase().normalize("NFKD").replace(/[^\w\s-]/g, "").trim().replace(/[\s_]+/g, "-").replace(/-+/g, "-").slice(0, 60);
+
+    $("f").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      $("err").hidden = true;
+      let items;
+      try { items = await loadItems(); } catch (x) { $("err").textContent = x.message; $("err").hidden = false; return; }
+
+      let id = slug($("title").value) || "item";
+      const base = id; let n = 2;
+      while (items.some((i) => i.id === id)) id = `${base}-${n++}`;
+
+      const details = {};
+      $("details").value.split("\n").forEach((line) => {
+        const i = line.indexOf(":");
+        if (i > 0) details[line.slice(0, i).trim()] = line.slice(i + 1).trim();
+      });
+      const images = $("images").value.split("\n").map((s) => s.trim()).filter(Boolean)
+        .map((s) => (s.startsWith("images/") ? s : "images/items/" + s.replace(/^\/+/, "")));
+
+      const item = {
+        id,
+        title: $("title").value.trim(),
+        category: $("category").value,
+        price: Number($("price").value),
+        ...($("originalPrice").value ? { originalPrice: Number($("originalPrice").value) } : {}),
+        condition: $("condition").value,
+        status: $("status").value,
+        ...($("brand").value.trim() ? { brand: $("brand").value.trim() } : {}),
+        ...($("size").value.trim() ? { size: $("size").value.trim() } : {}),
+        ...($("color").value.trim() ? { color: $("color").value.trim() } : {}),
+        dateAdded: new Date().toISOString().slice(0, 10),
+        featured: $("featured").checked,
+        description: $("description").value.trim(),
+        details,
+        images
+      };
+
+      $("out").value = JSON.stringify([item, ...items], null, 2) + "\n";
+      $("result").hidden = false;
+      $("result").scrollIntoView({ behavior: "smooth" });
+    });
+
+    $("copy").addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText($("out").value); }
+      catch (_) { $("out").select(); document.execCommand("copy"); }
+      $("copy").textContent = "Copied!";
+      setTimeout(() => ($("copy").textContent = "Copy"), 2000);
+    });
+  })();
+  </script>
+</body>
+</html>
